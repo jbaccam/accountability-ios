@@ -1,0 +1,59 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (iOS Simulator)
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_16.app
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Write Secrets.xcconfig
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          # Fall back to the public anon values if repo secrets are unset, so the
+          # build is reproducible for forks. The anon key is public by design.
+          URL="${SUPABASE_URL:-https://chekzbswiauotfqogopu.supabase.co}"
+          KEY="${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoZWt6YnN3aWF1b3RmcW9nb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDgzOTYsImV4cCI6MjA5Njc4NDM5Nn0.DYSBqVuXzBktNQ8dekUY_yXCfXDY-eHLNcujBzJvunQ}"
+          # Re-insert the xcconfig // escape.
+          printf 'SUPABASE_URL = %s\nSUPABASE_ANON_KEY = %s\n' \
+            "${URL/https:\/\//https:/\$()/}" "$KEY" > Secrets.xcconfig
+          echo "Wrote Secrets.xcconfig"
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Resolve packages
+        run: xcodebuild -resolvePackageDependencies -scheme Accountability
+
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -scheme Accountability \
+            -destination 'generic/platform=iOS Simulator' \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO | xcbeautify || \
+          xcodebuild build \
+            -scheme Accountability \
+            -destination 'generic/platform=iOS Simulator' \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO
