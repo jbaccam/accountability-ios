@@ -1,0 +1,20 @@
+# Secrets — never commit real values
+Secrets.xcconfig
+
+# XcodeGen output (generated on the Mac/CI)
+*.xcodeproj
+*.xcworkspace
+!*.xcworkspace/contents.xcworkspacedata
+
+# Xcode / SPM
+.DS_Store
+xcuserdata/
+DerivedData/
+build/
+.build/
+*.xcuserstate
+.swiftpm/
+Package.resolved
+
+# Misc
+*.log
