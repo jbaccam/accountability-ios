@@ -18,8 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select Xcode
-        run: sudo xcode-select -switch /Applications/Xcode_16.app
+      - name: Select latest Xcode
+        run: |
+          latest="$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)"
+          echo "Using ${latest:-/Applications/Xcode.app}"
+          sudo xcode-select -s "${latest:-/Applications/Xcode.app}"
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i ios || true
 
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -47,12 +52,12 @@ jobs:
       - name: Build
         run: |
           set -o pipefail
-          # Compile against the simulator SDK directly. This only needs the SDK
-          # (always present in Xcode), not an installed simulator *runtime*, so it
-          # avoids "no destination matching iOS Simulator" on hosted runners.
+          # Compile for a generic iOS device: needs the iOS platform/SDK but no
+          # simulator *runtime* and no code signing, so it is the most reliable
+          # "does it build" check on hosted runners.
           xcodebuild build \
             -scheme Accountability \
-            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS' \
             -configuration Debug \
             -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO | xcbeautify --renderer github-actions
