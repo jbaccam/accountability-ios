@@ -49,15 +49,32 @@ jobs:
       - name: Resolve packages
         run: xcodebuild -resolvePackageDependencies -scheme Accountability
 
-      - name: Build
+      - name: Build (unsigned, device)
         run: |
           set -o pipefail
-          # Compile for a generic iOS device: needs the iOS platform/SDK but no
-          # simulator *runtime* and no code signing, so it is the most reliable
-          # "does it build" check on hosted runners.
+          # Build for a generic iOS device with signing off. Needs the iOS
+          # platform/SDK but no simulator runtime — the most reliable "does it
+          # build" check, and it produces a device .app we can package as an IPA.
           xcodebuild build \
             -scheme Accountability \
             -destination 'generic/platform=iOS' \
             -configuration Debug \
+            -derivedDataPath build \
             -skipMacroValidation \
-            CODE_SIGNING_ALLOWED=NO | xcbeautify --renderer github-actions
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO | xcbeautify --renderer github-actions
+
+      - name: Package unsigned IPA
+        run: |
+          APP="build/Build/Products/Debug-iphoneos/Accountability.app"
+          if [ ! -d "$APP" ]; then echo "App bundle not found:"; ls -R build/Build/Products || true; exit 1; fi
+          rm -rf Payload Accountability-unsigned.ipa
+          mkdir Payload && cp -R "$APP" Payload/
+          zip -qry Accountability-unsigned.ipa Payload
+          echo "Packaged $(du -h Accountability-unsigned.ipa | cut -f1) IPA"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Accountability-unsigned-ipa
+          path: Accountability-unsigned.ipa
+          if-no-files-found: error
