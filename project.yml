@@ -23,7 +23,7 @@ settings:
 packages:
   Supabase:
     url: https://github.com/supabase/supabase-swift
-    minorVersion: 2.0.0
+    majorVersion: 2.0.0
 
 targets:
   Accountability:

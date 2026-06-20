@@ -47,13 +47,12 @@ jobs:
       - name: Build
         run: |
           set -o pipefail
+          # Compile against the simulator SDK directly. This only needs the SDK
+          # (always present in Xcode), not an installed simulator *runtime*, so it
+          # avoids "no destination matching iOS Simulator" on hosted runners.
           xcodebuild build \
             -scheme Accountability \
-            -destination 'generic/platform=iOS Simulator' \
+            -sdk iphonesimulator \
+            -configuration Debug \
             -skipMacroValidation \
-            CODE_SIGNING_ALLOWED=NO | xcbeautify || \
-          xcodebuild build \
-            -scheme Accountability \
-            -destination 'generic/platform=iOS Simulator' \
-            -skipMacroValidation \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO | xcbeautify --renderer github-actions
