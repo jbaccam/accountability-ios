@@ -77,7 +77,7 @@ struct SubmitView: View {
     private var photoCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Spacing.two) {
-                if let photoData, let image = UIImage(data: photoData) {
+                if let data = photoData, let image = UIImage(data: data) {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
