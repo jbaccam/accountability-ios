@@ -1,0 +1,31 @@
+# Opt-in linting for local use (not run in CI). Install: brew install swiftlint
+included:
+  - App
+  - Models
+  - Core
+  - DesignSystem
+  - Services
+  - Navigation
+  - Features
+
+excluded:
+  - build
+  - .build
+
+disabled_rules:
+  - trailing_comma          # we use trailing commas in multiline literals
+  - todo                    # TODO(real-payments) markers are intentional
+
+line_length:
+  warning: 110
+  error: 140
+  ignores_comments: true
+
+type_body_length:
+  warning: 400
+file_length:
+  warning: 500
+
+identifier_name:
+  min_length: 2
+  excluded: [id, x, y, r, g, b, to]
