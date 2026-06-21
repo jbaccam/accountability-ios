@@ -42,6 +42,8 @@ struct StatusChip: View {
         .padding(.vertical, Spacing.one)
         .background(kind.fill(theme.colors))
         .clipShape(Capsule())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Status: \(text)")
     }
 }
 

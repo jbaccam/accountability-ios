@@ -18,6 +18,9 @@ struct SlimProgressBar: View {
             }
         }
         .frame(height: height)
+        .accessibilityElement()
+        .accessibilityLabel("Progress")
+        .accessibilityValue("\(Int((max(0, min(1, progress))) * 100)) percent")
     }
 }
 

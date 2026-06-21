@@ -26,6 +26,7 @@ struct Avatar: View {
         .frame(width: size, height: size)
         .clipShape(Circle())
         .overlay(Circle().stroke(theme.colors.border, lineWidth: HairlineWidth))
+        .accessibilityLabel(isYou ? "Your avatar" : "\(name), avatar")
     }
 
     private var initials: some View {
