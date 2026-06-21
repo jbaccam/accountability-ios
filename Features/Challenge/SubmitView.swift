@@ -199,8 +199,10 @@ struct SubmitView: View {
                         location: wantsLocation ? location : nil
                     )
                 )
+                Haptics.success()
                 nav.pop()
             } catch {
+                Haptics.error()
                 toast = Format.errorMessage(error)
             }
         }
