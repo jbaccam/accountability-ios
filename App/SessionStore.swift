@@ -78,6 +78,11 @@ final class SessionStore {
         profile = nil
     }
 
+    /// Re-send the signup confirmation email.
+    func resendConfirmation(email: String) async throws {
+        try await client.auth.resend(email: email, type: .signup)
+    }
+
     func sendPasswordReset(email: String) async throws {
         try await client.auth.resetPasswordForEmail(
             email,
