@@ -67,4 +67,16 @@ extension StatusChip {
         case .needsResolution: self.init(text: "Needs resolution", kind: .warning)
         }
     }
+
+    /// Map a participant status onto chip text + kind. "Still in" leads — progress
+    /// is the hero (see PRODUCT.md).
+    init(participantStatus: ParticipantStatus) {
+        switch participantStatus {
+        case .invited: self.init(text: "Invited", kind: .neutral)
+        case .active: self.init(text: "Still in", kind: .success)
+        case .eliminated: self.init(text: "Out", kind: .danger)
+        case .winner: self.init(text: "Winner", kind: .success)
+        case .refunded: self.init(text: "Refunded", kind: .info)
+        }
+    }
 }
