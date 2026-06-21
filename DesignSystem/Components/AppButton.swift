@@ -69,7 +69,10 @@ struct AppButton: View {
     }
 
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            if variant == .primary || variant == .danger { Haptics.impact(.light) }
+            action()
+        }) {
             HStack(spacing: Spacing.two) {
                 if isLoading {
                     ProgressView().tint(foreground)
