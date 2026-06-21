@@ -62,13 +62,16 @@ final class LocationFetcher: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    nonisolated func locationManager(
+        _ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]
+    ) {
         let coord = locations.first?.coordinate
-        finish(coord.map { (lat: $0.latitude, lng: $0.longitude) })
+        let value = coord.map { (lat: $0.latitude, lng: $0.longitude) }
+        Task { @MainActor in self.finish(value) }
     }
 
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        finish(nil)
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Task { @MainActor in self.finish(nil) }
     }
 
     private func finish(_ value: (lat: Double, lng: Double)?) {
