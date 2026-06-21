@@ -88,7 +88,7 @@ struct CreateView: View {
         VStack(alignment: .leading, spacing: Spacing.three) {
             sectionTitle("Basics")
             AppTextField(label: "Title", text: $title, placeholder: "Gym every day")
-            AppTextField(
+            AppTextEditor(
                 label: "Rules / what counts",
                 text: $details,
                 placeholder: "What counts as a valid check-in?"
