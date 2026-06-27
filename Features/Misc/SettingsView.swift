@@ -13,10 +13,12 @@ struct SettingsView: View {
     @State private var toast: String?
     @State private var isDeleting = false
 
-    // TODO(real-payments): point these at the real marketing/legal site once it's live.
-    private let termsURL = URL(string: "https://accountability.app/terms")!
-    private let privacyURL = URL(string: "https://accountability.app/privacy")!
-    private let complianceURL = URL(string: "https://accountability.app/compliance")!
+    // Hosted in the repo for now so the links resolve for App Store review.
+    // TODO: swap for a real marketing/legal domain before public launch.
+    private let baseURL = "https://github.com/jbaccam/accountability-ios/blob/main/docs"
+    private var termsURL: URL { URL(string: "\(baseURL)/TERMS.md")! }
+    private var privacyURL: URL { URL(string: "\(baseURL)/PRIVACY.md")! }
+    private var complianceURL: URL { URL(string: "\(baseURL)/RESPONSIBLE-PLAY.md")! }
 
     private var profile: Profile? { session.profile }
     private var email: String? { session.session?.user.email }
