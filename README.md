@@ -27,6 +27,29 @@ open Accountability.xcodeproj
 > (`.github/workflows/ios.yml`). Set repo secrets `SUPABASE_URL` and
 > `SUPABASE_ANON_KEY`, or CI falls back to the public anon values.
 
+## Status & roadmap
+
+This native app is the **primary client** going forward. Simulated-money MVP is
+feature-complete; the focus now is getting it submittable.
+
+**Done**
+- Full feature set (auth, challenges, check-ins, review, friends, profiles).
+- Simulated balances only — `REAL_MONEY_ENABLED` is off.
+- In-app account deletion, accessibility, haptics, light/dark theming.
+- App Store privacy manifest + export-compliance key.
+- Privacy / Terms / Fair-Play docs (`docs/`), linked in-app.
+- CI builds an unsigned device IPA on every push.
+
+**Before App Store submission**
+- [ ] Apple Developer account + signing (CI currently builds unsigned).
+- [ ] Host the legal docs on a real domain (interim: GitHub-rendered markdown).
+- [ ] Backend sweep for orphaned avatar/proof files after account deletion.
+
+**Later (real money — gated behind legal review)**
+- [ ] Decide model: charity/forfeit (low legal load) vs. cash payouts (needs
+      counsel: skill-vs-gambling per state, money transmission, KYC, tax).
+- [ ] Stripe pre-auth holds; never take custody of funds.
+
 ## Layout
 
 | Path | Responsibility |
