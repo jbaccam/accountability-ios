@@ -53,7 +53,7 @@ struct ChallengeDetailView: View {
         let stillIn = joined.filter { Self.activeStatuses.contains($0.status) }.count
         let total = max(joined.count, 1)
         let progress = Double(stillIn) / Double(total)
-        let pot = challenge.entryFee * Double(joined.count)
+        let pot = Simulation.pot(entryFee: challenge.entryFee, players: joined.count)
         let playing = me != nil && [.active, .needsResolution].contains(challenge.status)
 
         header(challenge, stillIn: stillIn, joinedCount: joined.count, progress: progress, pot: pot)

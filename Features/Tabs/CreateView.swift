@@ -39,7 +39,7 @@ struct CreateView: View {
 
     private var fee: Double { Format.parseMoney(entryFeeText) }
     private var balance: Double { session.profile?.simulatedBalance ?? 0 }
-    private var feeOver: Bool { fee > balance }
+    private var feeOver: Bool { !Simulation.canAfford(stake: fee, balance: balance) }
 
     private var customDays: Int { Int(customDaysText) ?? 0 }
     private var customDaysInvalid: Bool {

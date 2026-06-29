@@ -39,7 +39,7 @@ struct ResultsView: View {
     private func content(_ detail: ChallengeDetail) -> some View {
         let challenge = detail.challenge
         let joined = detail.participants.filter { Self.joinedStatuses.contains($0.status) }
-        let pot = challenge.entryFee * Double(joined.count)
+        let pot = Simulation.pot(entryFee: challenge.entryFee, players: joined.count)
         let winners = detail.participants.filter { $0.status == .winner }
         let standings = detail.participants.sorted {
             (Self.order[$0.status] ?? 9) < (Self.order[$1.status] ?? 9)
